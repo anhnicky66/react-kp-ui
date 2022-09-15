@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { lazyImport } from '@/utils/lazyImport';
+import { Topic } from '@/features/topics/routes/Topic';
 
 const { Topics } = lazyImport(() => import('@/features/topics'), 'Topics');
 
@@ -24,8 +25,9 @@ export const publicRoutes = [
     path: '',
     element: <App />,
     children: [
-      { path: 'topics', element: <Topics /> },
-      { path: '', element: <div>Home</div> },
+      { path: '/:tenant/topics', element: <Topics /> },
+      { path: '/:tenant/topics/:topic', element: <Topic /> },
+      { path: '/', element: <div>Home</div> },
       { path: '*', element: <Navigate to="." /> },
     ],
   },

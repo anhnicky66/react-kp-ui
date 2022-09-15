@@ -8,9 +8,9 @@ export const getTopicDetails = (tenant: string, topicName: TopicName): Promise<T
 }
 type QueryFnType = typeof getTopicDetails;
 
-export const useTopicDetails = ({ tenant, topicName }: Record<string, string>) => {
+export const useTopicDetails = ({ tenant, topic }: Record<string, string>) => {
     return useQuery<ExtractFnReturnType<QueryFnType>>({
       queryKey: ['topicsDetails'],
-      queryFn: () => getTopicDetails(tenant, topicName as TopicName),
+      queryFn: () => getTopicDetails(tenant, topic as TopicName),
     });
   };

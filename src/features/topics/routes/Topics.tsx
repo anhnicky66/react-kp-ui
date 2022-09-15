@@ -1,10 +1,10 @@
+import { useParams } from 'react-router-dom';
 import { useTopics } from '../api/getTopics';
 import { TopicsList } from '../components/TopicsList';
 
 export const Topics = () => {
-  const topicsQuery = useTopics({
-    tenant: 'confluent'
-  });
+  const { tenant } = useParams();
+  let topicsQuery = useTopics({ tenant: tenant || '' });
 
   if (topicsQuery.isLoading) {
     return (
@@ -20,7 +20,7 @@ export const Topics = () => {
 
   return (
     <div>
-      <h1>Topics list</h1>
+      <h1><span>{tenant}</span>&nbsp;topics list</h1>
       <TopicsList data={topicsQuery.data} />
     </div>
   );
