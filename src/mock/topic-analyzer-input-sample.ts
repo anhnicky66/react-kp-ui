@@ -47,8 +47,8 @@ export const TopicAnalyzerInputSample = {
           "null" : 1
         },
         "duplicates" : {
-          "sum" : 0,
-          "distinctDuplicate" : 0,
+          "sum" : 10,
+          "distinctDuplicate" : 3,
           "key" : "Coming soon"
         },
         "entropy" : {
