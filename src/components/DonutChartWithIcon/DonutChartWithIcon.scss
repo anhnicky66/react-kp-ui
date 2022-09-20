@@ -1,0 +1,10 @@
+.donut-chart-with-icon {
+    transform: rotate(-90deg);
+    transition: all 1s ease-in-out;
+    
+    fill: none;
+    stroke: red;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 0 999;
+}

@@ -1,0 +1,24 @@
+.analysis-page {
+    padding: 12px 24px;
+    .row {
+        display: flex;
+        .col {
+            flex: 1;
+        }
+    }
+
+    .analysis-section-header {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 24px;
+    }
+}
+.analysis-section {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    .analysis-card {
+        width: 50%;
+        margin-bottom: 32px;
+    }
+}

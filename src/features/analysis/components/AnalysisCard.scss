@@ -1,0 +1,24 @@
+.analysis-card {
+    .top-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .text-information {
+            margin-left: 14px;
+            .value {
+                font-weight: bold;
+            }
+            .title {
+                color: #b7b6ba;
+                font-size: 14px;
+            }
+        }
+    }
+    .bottom-row {
+        .description {
+            color: #b7b6ba;
+            font-size: 14px;
+        }
+    }
+}
