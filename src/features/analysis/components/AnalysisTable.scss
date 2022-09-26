@@ -1,0 +1,17 @@
+.analysis-table {
+    width: 100%;
+    font-size: 14px;
+
+    td:first-child, th:first-child {
+        text-align: left;
+    }
+
+    td:not(:first-child), th:not(:first-child) {
+        text-align: right;
+    }
+
+    td, th {
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        padding: 16px;
+    }
+}

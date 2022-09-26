@@ -48,7 +48,7 @@ export const AnalysisCard = ({value, title, description, type}: AnalysisCardProp
     return (
       <div className="analysis-card">
           <div className="top-row">
-            <DonutChartWithIcon icon={icon} color={color} percent={50} size={70} />
+            <DonutChartWithIcon icon={icon} color={color} percent={100} size={70} />
             <div className="text-information">
                 <div className="value">{value}</div>
                 <div className="title">{title}</div>

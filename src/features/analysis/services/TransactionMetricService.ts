@@ -1,19 +1,20 @@
+import { TopicName } from "@/features/topics/types";
 import { Metrics } from "@/interfaces/Metric.interface";
 import { getAverage } from "@/utils/calculations";
 
 export class TransactionMetricService {
-    static getTotal(metrics: Metrics): number {
-        const { transaction } = metrics["orders-avro"];
+    static getTotal(topicName: TopicName, metrics: Metrics): number {
+        const { transaction } = metrics[topicName];
         return transaction.count.value;
     }
 
-    static getFailedCount(metrics: Metrics): number {
-        const { transaction } = metrics["orders-avro"];
+    static getFailedCount(topicName: TopicName, metrics: Metrics): number {
+        const { transaction } = metrics[topicName];
         return transaction.abortCount.value;
     }
 
-    static getAbortRate(metrics: Metrics): number {
-        const abortRate = Number((this.getFailedCount(metrics) / this.getTotal(metrics) * 100).toFixed(1));
+    static getAbortRate(topicName: TopicName, metrics: Metrics): number {
+        const abortRate = Number((this.getFailedCount(topicName, metrics) / this.getTotal(topicName, metrics) * 100).toFixed(1));
         if (isNaN(abortRate)) {
             return 0;
         }
@@ -21,8 +22,8 @@ export class TransactionMetricService {
         return abortRate;
     }
 
-    static getAvgDuration(metrics: Metrics): number {
-        const { transaction } = metrics["orders-avro"];
+    static getAvgDuration(topicName: TopicName, metrics: Metrics): number {
+        const { transaction } = metrics[topicName];
         const avg = getAverage([transaction.timeSpan.min, transaction.timeSpan.max]);
         if (isNaN(avg)) {
             return 0;

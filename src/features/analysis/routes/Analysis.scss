@@ -1,5 +1,7 @@
 .analysis-page {
     padding: 12px 24px;
+    max-width: 1078px;
+    margin: auto;
     .row {
         display: flex;
         .col {
@@ -19,6 +21,9 @@
     flex-wrap: wrap;
     .analysis-card {
         width: 50%;
+        margin-bottom: 32px;
+    }
+    .analysis-table {
         margin-bottom: 32px;
     }
 }

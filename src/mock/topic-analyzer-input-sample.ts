@@ -88,7 +88,8 @@ export const TopicAnalyzerInputSample = {
           "p95" : 1
         },
         "compressionCodecs" : [
-          "none"
+          "SNAPPY-5x",
+          "CURRENT"
         ],
         "compressionEfficiency" : {
           "value" : 1.0

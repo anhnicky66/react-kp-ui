@@ -6,89 +6,124 @@ import { Metrics } from "@/interfaces/Metric.interface";
 import { TransactionMetricService } from "../services/TransactionMetricService";
 import { AnalysisMetricType } from "../interfaces/AnalysisMetric.interface";
 import { DuplicateMetricService } from "../services/DuplicateMetricService";
+import {CompressionMetricService} from "../services/CompressionMetricService";
+import {AnalysisTable} from "../components/AnalysisTable";
 
 export const Analysis = () => {
     const metrics = TopicAnalyzerInputSample.metrics as Metrics;
+    const topicName = 'orders-avro';
     const transactionsAnalysis = [
         {
             id: AnalysisMetricType.TransactionTotal,
-            value: TransactionMetricService.getTotal(metrics).toString(),
+            value: TransactionMetricService.getTotal(topicName, metrics).toString(),
             title: 'Transactions',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.TransactionFailedCount,
-            value: TransactionMetricService.getFailedCount(metrics).toString(),
+            value: TransactionMetricService.getFailedCount(topicName, metrics).toString(),
             title: 'Failed Transactions',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.TransactionAbortRate,
-            value: TransactionMetricService.getAbortRate(metrics).toString() + '%',
+            value: TransactionMetricService.getAbortRate(topicName, metrics).toString() + '%',
             title: 'Abort rate',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.TransactionAvgDuration,
-            value: TransactionMetricService.getAvgDuration(metrics).toString() + 'ms',
+            value: TransactionMetricService.getAvgDuration(topicName, metrics).toString() + 'ms',
             title: 'Average duration',
-            description: '',
+            description: 'Further Analyze coming soon',
         }
     ];
     const duplicatesAnalysis = [
         {
             id: AnalysisMetricType.DuplicatesTotal,
-            value: DuplicateMetricService.getTotal(metrics).toString(),
+            value: DuplicateMetricService.getTotal(topicName, metrics).toString(),
             title: 'Duplicates',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.DistinctDuplicates,
-            value: DuplicateMetricService.getDistinct(metrics).toString(),
+            value: DuplicateMetricService.getDistinct(topicName, metrics).toString(),
             title: 'Distinct Duplicates',
-            description: '',
+            description: 'Further Analyze coming soon',
         }
     ];
     const messagesAnalysis = [
         {
             id: AnalysisMetricType.MessageTotal,
-            value: MessageAnalyzeService.getTotalMessages(metrics).toString(),
+            value: MessageAnalyzeService.getTotalMessages(topicName, metrics).toString(),
             title: 'Number of message',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.MessageAvgSize,
-            value: MessageAnalyzeService.getAvgMessageSize(metrics) + ' bytes',
+            value: MessageAnalyzeService.getAvgMessageSize(topicName, metrics) + ' bytes',
             title: 'Average message size',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.MessageAvgKeySize,
-            value: MessageAnalyzeService.getAvgKeySize(metrics) + ' bytes',
+            value: MessageAnalyzeService.getAvgKeySize(topicName, metrics) + ' bytes',
             title: 'Average key size',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.MessageAvgValueSize,
-            value: MessageAnalyzeService.getAvgValueSize(metrics) + ' bytes',
+            value: MessageAnalyzeService.getAvgValueSize(topicName, metrics) + ' bytes',
             title: 'Average value size',
-            description: '',
+            description: 'Further Analyze coming soon',
         }
     ];
     const headersAnalysis = [
         {
             id: AnalysisMetricType.HeaderAvgKeySize,
-            value: MessageAnalyzeService.getAvgHeaderSize(metrics).toString() + ' bytes',
+            value: MessageAnalyzeService.getAvgHeaderSize(topicName, metrics).toString() + ' bytes',
             title: 'Average header size',
-            description: '',
+            description: 'Further Analyze coming soon',
         },
         {
             id: AnalysisMetricType.HeaderDistinctKeys,
-            value: MessageAnalyzeService.getAvgNumberOfHeaders(metrics).toString(),
+            value: MessageAnalyzeService.getAvgNumberOfHeaders(topicName, metrics).toString(),
             title: 'Distinct Header Keys',
-            description: '',
+            description: 'Further Analyze coming soon',
         }
     ];
+
+    const compressionAnalysis = {
+        id: AnalysisMetricType.CompressionCodecs,
+        headers: [
+            { label: 'Name', key: 'name' },
+            { label: 'Saving', key: 'value' }
+        ],
+        rows: CompressionMetricService.getCompressionCodecs(topicName, metrics).map(codec => {
+            return {
+                name: codec,
+                value: CompressionMetricService.getCompressionSavings(topicName, metrics, codec)
+            }
+        }),
+    };
+
+    const topKeysAnalysis = {
+        headers: [
+            { label: 'Key', key: 'key' },
+            { label: 'Occurences', key: 'value' },
+        ],
+        rows: MessageAnalyzeService.getTopKeys(topicName, metrics)
+    };
+
+    const entropyOutliers = {
+        headers: [
+            { label: 'Partition', key: 'partition' },
+            { label: 'Offset', key: 'offset' },
+            { label: 'Entropy', key: 'entropy' },
+        ],
+        rows: MessageAnalyzeService.getEntropyOutliers(topicName, metrics)
+    }
+
 
     return (
         <div className="analysis-page">
@@ -120,6 +155,38 @@ export const Analysis = () => {
                         {headersAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} />)}
                     </div>
                 </div>
+            </div>
+
+            <hr />
+
+            <div className="row">
+                <div className="col">
+                    <div className="analysis-section-header">Compression Codecs</div>
+                    <div className="analysis-section">
+                        <AnalysisTable headers={compressionAnalysis.headers} rows={compressionAnalysis.rows}></AnalysisTable>
+                    </div>
+                </div>
+                <div className="col"></div>
+            </div>
+
+            <div className="row">
+                <div className="col">
+                    <div className="analysis-section-header">Top message keys</div>
+                    <div className="analysis-section">
+                        <AnalysisTable headers={topKeysAnalysis.headers} rows={topKeysAnalysis.rows}></AnalysisTable>
+                    </div>
+                </div>
+                <div className="col"></div>
+            </div>
+
+            <div className="row">
+                <div className="col">
+                    <div className="analysis-section-header">Outliers</div>
+                    <div className="analysis-section">
+                        <AnalysisTable headers={entropyOutliers.headers} rows={entropyOutliers.rows}></AnalysisTable>
+                    </div>
+                </div>
+                <div className="col"></div>
             </div>
             
         </div>

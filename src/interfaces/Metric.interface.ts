@@ -1,3 +1,5 @@
+import { TopicName } from "@/features/topics/types";
+
 export interface Sizing {
     min: number;
     max: number;
@@ -67,7 +69,7 @@ export interface Schema {
     schemaOccurrences: SchemaOccurence[],
 }
 
-export interface OrdersAvro {
+export interface TopicAnalyzation {
     replicationFactor: number,
     consumer: {
         active: number,
@@ -85,6 +87,4 @@ export interface OrdersAvro {
     schema: Schema
 }
 
-export interface Metrics {
-    'orders-avro': OrdersAvro,
-}
+export type Metrics = Record<TopicName, TopicAnalyzation>;
