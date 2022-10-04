@@ -1,0 +1,34 @@
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 5px;
+    .progress-bar-bg, .progress-bar-fg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .progress-bar-bg {
+        z-index: 0;
+    }
+    .progress-bar-fg {
+        z-index: 1;
+    }
+    .progress-values {
+        font-size: 11px;
+        position: absolute;
+        z-index: 2;
+        top: 6px;
+        width: 100%;
+        color: #b7b6ba;
+        .max {
+            position: absolute;
+            right: 0;
+        }
+        .value {
+            position: absolute;
+            left: 45%;
+        }
+    }
+}

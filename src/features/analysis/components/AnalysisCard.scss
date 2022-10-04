@@ -2,7 +2,6 @@
     .top-row {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
 
         .text-information {
             margin-left: 14px;
@@ -16,7 +15,20 @@
         }
     }
     .bottom-row {
+        .progress-bar-container {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            .progress-bar-label {
+                margin-right: 14px;
+                font-weight: 400;
+            }
+            .progress-bar {
+                width: 140px;
+            }
+        }
         .description {
+            padding-top: 12px;
             color: #b7b6ba;
             font-size: 14px;
         }
