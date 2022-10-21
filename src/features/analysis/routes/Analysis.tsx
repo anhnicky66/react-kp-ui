@@ -2,7 +2,7 @@ import "./Analysis.scss"
 import {AnalysisCard, AnalysisProgress} from "../components/AnalysisCard";
 import {TopicAnalyzerInputSample} from "@/mock/topic-analyzer-input-sample";
 import {MessageAnalyzeService} from "../services/MessageMetricService";
-import {Metrics} from "@/interfaces/Metric.interface";
+import {Metrics, Sizing} from "@/interfaces/Metric.interface";
 import {TransactionMetricService} from "../services/TransactionMetricService";
 import {AnalysisMetricType} from "../interfaces/AnalysisMetric.interface";
 import {DuplicateMetricService} from "../services/DuplicateMetricService";
@@ -12,6 +12,16 @@ import {AnalysisTable} from "../components/AnalysisTable";
 export const Analysis = () => {
     const metrics = TopicAnalyzerInputSample.metrics as Metrics;
     const topicName = 'orders-avro';
+
+    const sizeToProgress = (sizeObj: Sizing): AnalysisProgress[] => {
+        const {min, max, p50, p90, p95} = sizeObj;
+        const progress: AnalysisProgress[] = [
+            {min, max, value: p50, label: 'p50'},
+            {min, max, value: p90, label: 'p90'},
+            {min, max, value: p95, label: 'p95'}
+        ];
+        return progress;
+    }
 
     const transactionsAnalysis = [
         {
@@ -33,24 +43,14 @@ export const Analysis = () => {
             value: TransactionMetricService.getAbortRate(topicName, metrics).toString() + '%',
             title: 'Abort rate',
             description: 'Further Analyze coming soon',
-            progress: [],
+            progress: sizeToProgress(TransactionMetricService.getAbortTimeSpanSizing(topicName, metrics)),
         },
         {
             id: AnalysisMetricType.TransactionAvgDuration,
             value: TransactionMetricService.getAvgDuration(topicName, metrics).toString() + 'ms',
             title: 'Average duration',
             description: 'Further Analyze coming soon',
-            ...(() => {
-                const {min, max, p50, p90, p95} = TransactionMetricService.getTimeSpanSizing(topicName, metrics);
-                const progress: AnalysisProgress[] = [
-                    {min, max, value: p50, label: 'p50'},
-                    {min, max, value: p90, label: 'p90'},
-                    {min, max, value: p95, label: 'p95'}
-                ];
-                return {
-                    progress
-                }
-            })()
+            progress: sizeToProgress(TransactionMetricService.getTimeSpanSizing(topicName, metrics)),
         }
     ];
     const duplicatesAnalysis = [
@@ -59,12 +59,14 @@ export const Analysis = () => {
             value: DuplicateMetricService.getTotal(topicName, metrics).toString(),
             title: 'Duplicates',
             description: 'Further Analyze coming soon',
+            progress: []
         },
         {
             id: AnalysisMetricType.DistinctDuplicates,
             value: DuplicateMetricService.getDistinct(topicName, metrics).toString(),
             title: 'Distinct Duplicates',
             description: 'Further Analyze coming soon',
+            progress: []
         }
     ];
     const messagesAnalysis = [
@@ -73,24 +75,28 @@ export const Analysis = () => {
             value: MessageAnalyzeService.getTotalMessages(topicName, metrics).toString(),
             title: 'Number of message',
             description: 'Further Analyze coming soon',
+            progress: []
         },
         {
             id: AnalysisMetricType.MessageAvgSize,
             value: MessageAnalyzeService.getAvgMessageSize(topicName, metrics) + ' bytes',
             title: 'Average message size',
             description: 'Further Analyze coming soon',
+            progress: sizeToProgress(MessageAnalyzeService.getMessageRecordSize(topicName, metrics)),
         },
         {
             id: AnalysisMetricType.MessageAvgKeySize,
             value: MessageAnalyzeService.getAvgKeySize(topicName, metrics) + ' bytes',
             title: 'Average key size',
             description: 'Further Analyze coming soon',
+            progress: sizeToProgress(MessageAnalyzeService.getMessageKeySize(topicName, metrics)),
         },
         {
             id: AnalysisMetricType.MessageAvgValueSize,
             value: MessageAnalyzeService.getAvgValueSize(topicName, metrics) + ' bytes',
             title: 'Average value size',
             description: 'Further Analyze coming soon',
+            progress: sizeToProgress(MessageAnalyzeService.getMessageValueSize(topicName, metrics)),
         }
     ];
     const headersAnalysis = [
@@ -99,12 +105,14 @@ export const Analysis = () => {
             value: MessageAnalyzeService.getAvgHeaderSize(topicName, metrics).toString() + ' bytes',
             title: 'Average header size',
             description: 'Further Analyze coming soon',
+            progress: []
         },
         {
             id: AnalysisMetricType.HeaderDistinctKeys,
             value: MessageAnalyzeService.getAvgNumberOfHeaders(topicName, metrics).toString(),
             title: 'Distinct Header Keys',
             description: 'Further Analyze coming soon',
+            progress: []
         }
     ];
 
@@ -136,7 +144,7 @@ export const Analysis = () => {
             {label: 'Offset', key: 'offset'},
             {label: 'Entropy', key: 'entropy'},
         ],
-        rows: MessageAnalyzeService.getEntropyOutliers(topicName, metrics)
+        rows: MessageAnalyzeService.getEntropyOutliers(topicName, metrics),
     }
 
 
@@ -152,7 +160,7 @@ export const Analysis = () => {
                 <div className="col">
                     <div className="analysis-section-header">Duplicates</div>
                     <div className="analysis-section">
-                        {duplicatesAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} />)}
+                        {duplicatesAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} progress={m.progress || []} />)}
                     </div>
                 </div>
             </div>
@@ -161,13 +169,13 @@ export const Analysis = () => {
                 <div className="col">
                     <div className="analysis-section-header">Messages</div>
                     <div className="analysis-section">
-                        {messagesAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} />)}
+                        {messagesAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} progress={m.progress || []} />)}
                     </div>
                 </div>
                 <div className="col">
                     <div className="analysis-section-header">Headers</div>
                     <div className="analysis-section">
-                        {headersAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} />)}
+                        {headersAnalysis.map(m => <AnalysisCard key={m.id} type={m.id} value={m.value} title={m.title} description={m.description} progress={m.progress || []} />)}
                     </div>
                 </div>
             </div>

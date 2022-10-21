@@ -16,5 +16,7 @@ export enum AnalysisMetricType {
     HeaderAvgValueSize = 'HeaderAvgValueSize',
     HeaderDistinctKeys = 'HeaderDistinctKeys',
 
-    CompressionCodecs = 'CompressionCodecs'
+    CompressionCodecs = 'CompressionCodecs',
+
+    Entropy = 'Entropy'
 }
